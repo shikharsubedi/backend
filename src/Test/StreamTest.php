@@ -1,0 +1,70 @@
+<?php
+namespace Test;
+
+use Demo\Inventory;
+use Demo\Stream;
+use Demo\Order;
+use Demo\Generator\OrderGenerator;
+use Demo\Generator\StreamGenerator;
+use Demo\DataSource;
+
+class StreamTest extends \PHPUnit_Framework_TestCase
+{
+
+    public function testStreamTotal()
+    {
+        $dataSource = $this->getDataSource();
+
+        $dataSource->generate();
+
+        $streams = $dataSource->getStreams();
+
+        foreach ($streams as $key => $stream) {
+            $streamAllocation = $stream->getStreamAllocation();
+            $streamTotal = $stream->getStreamTotal();
+            foreach (Inventory::ITEMS as $item) {
+                $this->assertLessThanOrEqual($streamTotal[$item], $streamAllocation->getItem($item));
+            }
+        }
+
+    }
+
+    public function testOrderHasItemCountLessThan6()
+    {
+
+    }
+
+    /**
+     * @return DataSource
+     */
+    protected function getDataSource()
+    {
+        $inventoryArray = array(
+            'A' => 5,
+            'B' => 4,
+            'C' => 3,
+            'D' => 2,
+            'E' => 1,
+        );
+
+        $randomIncrement = array(
+            'A' => 2,
+            'B' => 8,
+            'C' => 3,
+            'D' => 0,
+            'E' => 3,
+        );
+
+        $inventory = new Inventory($inventoryArray);
+
+        $orderGenerator = new OrderGenerator();
+
+        $streamGenerator = new StreamGenerator($orderGenerator, 2, $randomIncrement);
+
+        $dataSource = new DataSource($inventory,$streamGenerator);
+
+        return $dataSource;
+
+    }
+
+}

@@ -2,19 +2,10 @@
 namespace Demo;
 
 use Demo\Generator\StreamGenerator;
+use Demo\Generator\StringGenerator;
 
 class DataSource
 {
-    /**
-     * @var string
-     */
-    private $result;
-
-    /**
-     * @var Stream[];
-     */
-    private $streams;
-
     /**
      * @var StreamGenerator
      */
@@ -48,33 +39,23 @@ class DataSource
         return $this->inventory;
     }
 
-
-    /**
-     * @return string
-     */
-    public function getResult()
-    {
-        return $this->result;
-    }
-
     /**
      * @return Stream[]
      */
-    public function getStreams()
-    {
-        return $this->streams;
-    }
-
     public function generate()
     {
-        $this->streams = $this->streamGenerator->generate($this->inventory);
+        return $this->streamGenerator->generate($this->inventory);
+
     }
 
-
-    public function generateJsonStream(JsonGenerator $jsonGenerator)
+    /**
+     * @param StringGenerator $stringGenerator
+     * @param Stream[] $streams
+     * @return string
+     */
+    public function generateJsonStream(StringGenerator $stringGenerator, $streams)
     {
-        return $jsonGenerator->generate($this->streams);
+        return $stringGenerator->generateInputString($streams);
     }
-
 
 }

@@ -3,7 +3,7 @@ namespace Demo\Exception;
 
 use RuntimeException;
 
-class IllegalStateException extends RuntimeException
+class OrderNotAvailableException extends RuntimeException
 {
 
 }

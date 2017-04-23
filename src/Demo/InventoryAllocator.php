@@ -12,6 +12,33 @@ class InventoryAllocator
 
     private $inventory;
 
+    private $outputQueue;
+
+    /**
+     * @return mixed
+     */
+    public function getInputStream()
+    {
+        return $this->inputStream;
+    }
+
+    /**
+     * @return Inventory
+     */
+    public function getInventory()
+    {
+        return $this->inventory;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOutputQueue()
+    {
+        return $this->outputQueue;
+    }
+
+
     public function __construct($inputStream, Inventory $inventory)
     {
         $this->inputStream = $inputStream;
@@ -32,7 +59,7 @@ class InventoryAllocator
 
         $orderInputQueues = $this->generateOrderInputQueues($streamInputQueue);
 
-        $outputQueue = $this->fulfillOrders($orderInputQueues);
+        return $this->fulfillOrders($orderInputQueues);
 
     }
 
@@ -67,13 +94,13 @@ class InventoryAllocator
     {
         $outputQueue = new SplQueue();
 
-        $result = [];
-
         foreach ($orderInputQueues as $streamId => $orderQueue) {
             $outputQueue->enqueue("Stream" . $streamId);
+
             while ($orderQueue->valid()) {
                 $current = $orderQueue->current();
                 $outputQueue->enqueue($this->fulfillSingleOrder($current['data'], $current['priority']));
+
                 if ($this->inventory->getTotal() == 0) {
                     return $outputQueue;
                 }
@@ -88,8 +115,52 @@ class InventoryAllocator
     private function fulfillSingleOrder(array $orderItems, $id)
     {
 
-        return [];
+        $backOrder = $this->getEmptyOrder();
+        $orderArray = $this->getOrder($orderItems);
+        $fulfillArray = $this->getEmptyOrder();
+        foreach ($orderItems as $item => $quantity) {
 
+            try {
+                $this->inventory->decrement($item, $quantity);
+                $fulfillArray[$item] = $quantity;
+
+            } catch (InsufficientQuantityException $e) {
+                $backOrder[$item] = $quantity;
+            }
+
+        }
+
+        return array(
+            'id' => $id,
+            'orderArray' => $orderArray,
+            'fulfillArray' => $fulfillArray,
+            'backOrder' => $backOrder,
+        );
+
+    }
+
+    private function getEmptyOrder()
+    {
+        $emptyOrder = [];
+        foreach (Inventory::ITEMS as $item) {
+            $emptyOrder[$item] = 0;
+        }
+        return $emptyOrder;
+    }
+
+    private function getOrder(array $orderItems)
+    {
+        $order = [];
+        foreach (Inventory::ITEMS as $item) {
+
+            if (!isset($orderItems[$item])) {
+                $order[$item] = 0;
+            } else {
+                $order[$item] = $orderItems[$item];
+            }
+        }
+
+        return $order;
     }
 
 }

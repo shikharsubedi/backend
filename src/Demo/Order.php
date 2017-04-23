@@ -1,13 +1,14 @@
 <?php
 namespace Demo;
 
+use Demo\Exception\OrderNotAvailableException;
+
 class Order
 {
     /**
      * @var integer
      */
     private $id;
-
 
     /**
      * @var array
@@ -32,12 +33,18 @@ class Order
         return $this->orderItems;
     }
 
-
+    /**
+     * Order constructor.
+     * @param int $id
+     */
     public function __construct($id)
     {
         $this->id = $id;
     }
 
+    /**
+     * @param array $orderItems
+     */
     public function setOrderItems(array $orderItems)
     {
         $this->orderItems = $orderItems;
@@ -45,15 +52,16 @@ class Order
 
 
     /**
-     * get the map of item and quantity values for the order. If the item is not present, a 0 is placed as quantity
+     * get the map of item and quantity values for the order.
+     * If the item is not present, a 0 is placed as quantity
      *
      * @return array
-     * @throws \Exception
+     * @throws OrderNotAvailableException
      */
     public function getOrderTotal()
     {
         if (is_null($this->orderItems)) {
-            throw new \Exception("OrderItems not available");
+            throw new OrderNotAvailableException("OrderItems not available");
         }
         $total = [];
 
@@ -69,20 +77,21 @@ class Order
     }
 
     /**
-     * used by the JsonGenerator to generate the final json String
+     *  used by the JsonGenerator to generate the final json String
+     * @return array
      */
     public function generateOutputArray()
     {
         $result = [];
 
         if (is_null($this->orderItems)) {
-            throw new \Exception("OrderItems should be present");
+            throw new OrderNotAvailableException("OrderItems should be present");
         }
 
         $result['id'] = $this->getId();
-        
+
         $result['items'] = $this->orderItems;
-        
+
         return $result;
     }
 }

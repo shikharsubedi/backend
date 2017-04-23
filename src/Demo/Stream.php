@@ -108,8 +108,6 @@ class Stream
 
         return $result;
     }
-        
-        
-    
+
 
 }

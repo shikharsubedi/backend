@@ -1,24 +1,21 @@
 <?php
 namespace Test;
 
-use Demo\Generator\JsonGenerator;
 use Demo\Inventory;
-use Demo\Stream;
-use Demo\Order;
 use Demo\Generator\OrderGenerator;
 use Demo\Generator\StreamGenerator;
 use Demo\DataSource;
+use Demo\Stream;
 
 class StreamTest extends \PHPUnit_Framework_TestCase
 {
 
     public function testStreamTotal()
     {
-        $dataSource = $this->getDataSource();
+        list($dataSource, $inventory) = $this->getDataSource();
 
-        $dataSource->generate();
-
-        $streams = $dataSource->getStreams();
+        /** @var Stream[] $streams */
+        $streams = $dataSource->generate();
 
         foreach ($streams as $key => $stream) {
             $streamAllocation = $stream->getStreamAllocation();
@@ -27,18 +24,16 @@ class StreamTest extends \PHPUnit_Framework_TestCase
                 $this->assertLessThanOrEqual($streamTotal[$item], $streamAllocation->getItem($item));
             }
         }
-        
+
     }
 
     public function testStreamTotalIsGreaterThanInventory()
     {
-        $dataSource = $this->getDataSource();
+        list($dataSource, $inventory) = $this->getDataSource();
 
-        $dataSource->generate();
+        /** @var Stream[] $streams */
+        $streams = $dataSource->generate();
 
-        $inventory = $dataSource->getInventory();
-
-        $streams = $dataSource->getStreams();
         $total = [];
 
         foreach ($streams as $key => $stream) {
@@ -59,15 +54,15 @@ class StreamTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return DataSource
+     * @return array
      */
-    protected function getDataSource()
+    public static function getDataSource()
     {
         $inventoryArray = array(
             'A' => 5,
             'B' => 4,
             'C' => 3,
-            'D' => 2,
+            'D' => 0,
             'E' => 1,
         );
 
@@ -76,7 +71,7 @@ class StreamTest extends \PHPUnit_Framework_TestCase
             'B' => 8,
             'C' => 3,
             'D' => 0,
-            'E' => 3,
+            'E' => 6,
         );
 
         $inventory = new Inventory($inventoryArray);
@@ -87,7 +82,7 @@ class StreamTest extends \PHPUnit_Framework_TestCase
 
         $dataSource = new DataSource($inventory, $streamGenerator);
 
-        return $dataSource;
+        return array($dataSource, $inventory);
 
     }
 

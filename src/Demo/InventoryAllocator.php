@@ -4,22 +4,28 @@ namespace Demo;
 
 use Demo\Exception\InsufficientQuantityException;
 use Demo\Exception\IllegalStateException;
+use SplPriorityQueue;
 use SplQueue;
 
 class InventoryAllocator
 {
-    private $inputStream;
+    /**
+     * the input json string
+     * @var string
+     */
+    private $inputString;
 
+    /**
+     * @var Inventory
+     */
     private $inventory;
-
-    private $outputQueue;
 
     /**
      * @return mixed
      */
-    public function getInputStream()
+    public function getInputString()
     {
-        return $this->inputStream;
+        return $this->inputString;
     }
 
     /**
@@ -30,28 +36,28 @@ class InventoryAllocator
         return $this->inventory;
     }
 
+
     /**
-     * @return mixed
+     * InventoryAllocator constructor.
+     * @param $inputString
+     * @param Inventory $inventory
      */
-    public function getOutputQueue()
+    public function __construct($inputString, Inventory $inventory)
     {
-        return $this->outputQueue;
-    }
-
-
-    public function __construct($inputStream, Inventory $inventory)
-    {
-        $this->inputStream = $inputStream;
+        $this->inputString = $inputString;
         $this->inventory = $inventory;
     }
 
+    /**
+     * @return SplQueue
+     */
     public function allocate()
     {
-        $inputArray = json_decode($this->inputStream, true);
-
+        $inputArray = json_decode($this->inputString, true);
         $streams = $inputArray['streams'];
 
         $streamInputQueue = new MinPriorityQueue();
+        $streamInputQueue->setExtractFlags(SplPriorityQueue::EXTR_BOTH);
 
         foreach ($streams as $stream) {
             $streamInputQueue->insert($stream, $stream['id']);
@@ -73,6 +79,7 @@ class InventoryAllocator
         while ($streamInputQueue->valid()) {
             $current = $streamInputQueue->current();
             $orderInputQueue = new MinPriorityQueue();
+            $orderInputQueue->setExtractFlags(SplPriorityQueue::EXTR_BOTH);
             $orders = $current['data']['orders'];
             foreach ($orders as $order) {
                 $orderInputQueue->insert($order['items'], $order['id']);
@@ -104,11 +111,14 @@ class InventoryAllocator
                 if ($this->inventory->getTotal() == 0) {
                     return $outputQueue;
                 }
+
+                $orderQueue->next();
             }
         }
         if ($this->inventory->getTotal() != 0) {
-            throw new IllegalStateException("Inventory total must be 0 after order fulfillment");
+            throw new IllegalStateException("Inventory Total must be zero after fulfillment");
         }
+
         return $outputQueue;
     }
 

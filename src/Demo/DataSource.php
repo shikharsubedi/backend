@@ -44,7 +44,8 @@ class DataSource
      */
     public function generate()
     {
-        return $this->streamGenerator->generate($this->inventory);
+        $inventory = clone $this->inventory;
+        return $this->streamGenerator->generate($inventory);
 
     }
 

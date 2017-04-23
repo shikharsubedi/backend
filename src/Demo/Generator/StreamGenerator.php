@@ -1,6 +1,7 @@
 <?php
 namespace Demo\Generator;
 
+use Demo\Exception\InsufficientQuantityException;
 use Demo\Stream;
 use Demo\Inventory;
 
@@ -22,6 +23,11 @@ class StreamGenerator
      * @var OrderGenerator
      */
     private $orderGenerator;
+
+    /**
+     * @var Inventory
+     */
+    private $totalInventory;
 
 
     /**
@@ -83,10 +89,14 @@ class StreamGenerator
      */
     public function generate(Inventory $totalAllocation)
     {
+        $this->totalInventory = clone $totalAllocation;
         $streams = [];
         for ($i = 1; $i <= $this->streamCount; $i++) {
             $streams[$i] = $this->build($i, $totalAllocation);
+
         }
+
+        $streams = $this->ensureCorrectness($streams);
         return $streams;
     }
 
@@ -97,17 +107,19 @@ class StreamGenerator
      */
     private function build($id, Inventory $totalAllocation)
     {
-        $items = $this->generateItemCount($totalAllocation);
+
+        $items = $this->generateItemCount($this->totalInventory);
         $streamInventory = new Inventory($items);
         $streamAllocation = clone $streamInventory;
         $headerCount = 1;
         $stream = new Stream($id, $this->streamCount, $streamAllocation);
 
-        while (($streamInventory->getTotal()) > 0) {
-            $order = $this->orderGenerator->generateOrder($headerCount, $streamInventory);
+        while ((($streamInventory->getTotal()) > 0) && (($totalAllocation->getTotal()) > 0)) {
+            $order = $this->orderGenerator->generateOrder($headerCount, $streamInventory, $totalAllocation);
             $stream->addOrder($headerCount, $order);
             $headerCount++;
         }
+
         return $stream;
     }
 
@@ -122,5 +134,38 @@ class StreamGenerator
             $items[$item] = ceil(($totalAllocation->getItem($item) + $this->randomIncrement[$item]) / $this->streamCount);
         }
         return $items;
+
+    }
+
+    /**
+     * @param Stream[] $streams
+     * @return Stream[]
+     */
+    private function ensureCorrectness(array $streams)
+    {
+        $testInventory = clone $this->totalInventory;
+        $orderId = 0;
+        foreach ($streams as $stream) {
+            foreach ($stream->getOrders() as $orderId => $order) {
+                foreach ($order->getOrderItems() as $item => $quantity) {
+                    try {
+                        $testInventory->decrement($item, $quantity);
+                    } catch (InsufficientQuantityException $e) {
+
+                    }
+
+                }
+            }
+        }
+        if ($testInventory->getTotal() != 0) {
+            $stream = $streams[$this->streamCount];
+            $order = $this->orderGenerator->generateFinalOrder(($orderId + 1), $testInventory);
+            $stream->addOrder(($orderId + 1), $order);
+            $streams[$this->streamCount] = $stream;
+        }
+
+        return $streams;
+
+
     }
 }

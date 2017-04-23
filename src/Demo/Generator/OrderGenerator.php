@@ -9,15 +9,15 @@ class OrderGenerator
 {
     const MAX_ITEMS = 5;
 
-    public function generateOrder($id, Inventory $streamInventory)
+    public function generateOrder($id, Inventory $streamInventory, Inventory $totalInventory)
     {
-        $resultArray = $this->buildOutputArray($streamInventory);
+        $resultArray = $this->buildOutputArray($streamInventory, $totalInventory);
         $order = new Order($id);
         $order->setOrderItems($resultArray);
         return $order;
     }
 
-    private function buildOutputArray(Inventory $streamInventory)
+    private function buildOutputArray(Inventory $streamInventory, Inventory $totalInventory)
     {
         $resultArray = [];
         $items = Inventory::ITEMS;
@@ -32,15 +32,44 @@ class OrderGenerator
                 $decrement = $streamInventory->getItem($item);
                 $streamInventory->decrement($item, $decrement);
             }
+            try {
+                $totalInventory->decrement($item, $decrement);
+            } catch (InsufficientQuantityException $e) {
+                $itemQuantity = $totalInventory->getItem($item);
+                $totalInventory->decrement($item, $itemQuantity);
+            }
+
+
             $resultArray[$item] = $decrement;
 
         }
-        if (array_sum($resultArray) == 0) {
-            return $this->buildOutputArray($streamInventory);
+        if (array_sum($resultArray) == 0 && $totalInventory->getTotal() != 0) {
+            return $this->buildOutputArray($streamInventory, $totalInventory);
+        } elseif (array_sum($resultArray) == 0 && $totalInventory->getTotal() == 0) {
+            return $this->buildRandomOrderItem();
+
         } else {
             ksort($resultArray);
             return $resultArray;
         }
+    }
+
+    /**
+     * @param $id
+     * @param Inventory $totalInventory
+     * @return Order
+     */
+    public function generateFinalOrder($id, Inventory $totalInventory)
+    {
+        $order = new Order($id);
+
+        $orderItems = [];
+
+        foreach ($totalInventory as $item => $quantity) {
+            $orderItems[$item] = $quantity;
+        }
+        $order->setOrderItems($orderItems);
+        return $order;
     }
 
     /**
@@ -57,5 +86,17 @@ class OrderGenerator
         }
         return $randKeys;
     }
+
+    private function buildRandomOrderItem()
+    {
+        $orderItem = [];
+        $items = Inventory::ITEMS;
+        $randKeys = array_rand($items, 1);
+        $item = $items[$randKeys];
+        $orderItem[$item] = rand(1, 5);
+
+        return $orderItem;
+    }
+
 
 }

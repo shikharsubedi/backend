@@ -18,7 +18,9 @@ class StringGenerator
             $result['streams'][] = $stream->generateOutputArray();
         }
 
-        return json_encode($result);
+        $string = json_encode($result);
+
+        return $string;
     }
 
     /**
@@ -44,13 +46,17 @@ class StringGenerator
 
     private function processOrderString(array $queueItem)
     {
-        $outputArray = [];
-        $outputArray[] = $queueItem['id'];
-        $outputArray[] = array_values($queueItem['orderArray']);
-        $outputArray[] = array_values($queueItem['fulfillArray']);
-        $outputArray[] = array_values($queueItem['backOrder']);
+        $outputArray = array(
+            $queueItem['id'],
+            implode(",", array_values($queueItem['orderArray'])),
+            implode(",", array_values($queueItem['fulfillArray'])),
+            implode(",", array_values($queueItem['backOrder'])),
+        );
 
-        return implode("::", $outputArray);
+
+        $output = join("::", $outputArray);
+
+        return $output;
 
     }
 

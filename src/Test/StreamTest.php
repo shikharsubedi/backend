@@ -9,24 +9,7 @@ use Demo\Stream;
 
 class StreamTest extends \PHPUnit_Framework_TestCase
 {
-
-    public function testStreamTotal()
-    {
-        list($dataSource, $inventory) = $this->getDataSource();
-
-        /** @var Stream[] $streams */
-        $streams = $dataSource->generate();
-
-        foreach ($streams as $key => $stream) {
-            $streamAllocation = $stream->getStreamAllocation();
-            $streamTotal = $stream->getStreamTotal();
-            foreach (Inventory::ITEMS as $item) {
-                $this->assertLessThanOrEqual($streamTotal[$item], $streamAllocation->getItem($item));
-            }
-        }
-
-    }
-
+    
     public function testStreamTotalIsGreaterThanInventory()
     {
         list($dataSource, $inventory) = $this->getDataSource();

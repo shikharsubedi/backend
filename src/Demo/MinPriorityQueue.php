@@ -1,7 +1,9 @@
 <?php
 namespace Demo;
 
-class MinPriorityQueue extends \SplPriorityQueue
+use SplPriorityQueue;
+
+class MinPriorityQueue extends SplPriorityQueue
 {
 
     public function compare($priority1, $priority2)
@@ -11,6 +13,5 @@ class MinPriorityQueue extends \SplPriorityQueue
         }
         return ($priority1 < $priority2) ? 1 : -1;
     }
-
 
 }

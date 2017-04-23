@@ -8,7 +8,7 @@ use Demo\Order;
 class OrderGenerator
 {
     const MAX_ITEMS = 5;
-    
+
     public function generateOrder($id, Inventory $streamInventory)
     {
         $resultArray = $this->buildOutputArray($streamInventory);
@@ -22,7 +22,7 @@ class OrderGenerator
         $resultArray = [];
         $items = Inventory::ITEMS;
         $randKeys = $this->getRandKeys($items);
-        
+
         foreach ($randKeys as $key) {
             $decrement = rand(0, static::MAX_ITEMS);
             $item = $items[$key];
@@ -35,7 +35,7 @@ class OrderGenerator
             $resultArray[$item] = $decrement;
 
         }
-        if (array_sum($resultArray) === 0) {
+        if (array_sum($resultArray) == 0) {
             return $this->buildOutputArray($streamInventory);
         } else {
             ksort($resultArray);

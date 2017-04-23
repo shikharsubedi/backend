@@ -9,7 +9,7 @@ class DataSource
      * @var string
      */
     private $result;
-    
+
     /**
      * @var Stream[];
      */
@@ -39,7 +39,7 @@ class DataSource
         $this->streamGenerator = $streamGenerator;
     }
 
-    
+
     /**
      * @return Inventory
      */
@@ -69,6 +69,12 @@ class DataSource
     {
         $this->streams = $this->streamGenerator->generate($this->inventory);
     }
-    
+
+
+    public function generateJsonStream(JsonGenerator $jsonGenerator)
+    {
+        return $jsonGenerator->generate($this->streams);
+    }
+
 
 }

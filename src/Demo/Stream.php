@@ -23,7 +23,7 @@ class Stream
      * @var Inventory
      */
     private $streamAllocation;
-   
+
     /**
      * @return int
      */
@@ -65,7 +65,7 @@ class Stream
     {
         return $this->orders[$id];
     }
-    
+
     public function __construct($id, $streamCount, Inventory $streamAllocation)
     {
         $this->id = $id;
@@ -74,18 +74,18 @@ class Stream
         $this->orders = [];
     }
 
-    /**@return array
-     * 
+    /**
+     * @return array
      */
     public function getStreamTotal()
     {
-       $streamTotal = [];
+        $streamTotal = [];
         foreach ($this->getOrders() as $order) {
             foreach ($order->getOrderTotal() as $key => $value) {
                 if (!isset($streamTotal[$key])) {
                     $streamTotal[$key] = $value;
-                }else{
-                    $streamTotal[$key]+=$value;
+                } else {
+                    $streamTotal[$key] += $value;
                 }
             }
 
@@ -93,5 +93,23 @@ class Stream
         return $streamTotal;
 
     }
+
+    /**
+     * used by the JsonGenerator class while generating the final json string
+     */
+    public function generateOutputArray()
+    {
+        $result = [];
+        $result['id'] = $this->getId();
+
+        foreach ($this->getOrders() as $order) {
+            $result['orders'][] = $order->generateOutputArray();
+        }
+
+        return $result;
+    }
+        
+        
     
+
 }

@@ -3,8 +3,9 @@ namespace Demo;
 
 use Demo\Exception\IllegalItemException;
 use Demo\Exception\InsufficientQuantityException;
+use Demo\Exception\ZeroQuantityException;
 
-class Inventory  implements \IteratorAggregate 
+class Inventory implements \IteratorAggregate
 {
     /**
      * @var array
@@ -24,6 +25,7 @@ class Inventory  implements \IteratorAggregate
      * @param array $input
      * @throws IllegalItemException
      * @throws InsufficientQuantityException
+     * @throws ZeroQuantityException
      */
     private function validate(array $input)
     {
@@ -35,6 +37,9 @@ class Inventory  implements \IteratorAggregate
             if ($quantity < 0) {
                 throw new InsufficientQuantityException("Quantity cannot be less than 0");
             }
+        }
+        if (array_sum($input) == 0) {
+            throw new ZeroQuantityException("All items cannot have 0 quantity");
         }
     }
 
@@ -72,7 +77,7 @@ class Inventory  implements \IteratorAggregate
     {
         return array_sum($this->snapshot);
     }
-    
+
     public function getIterator()
     {
         return new \ArrayIterator($this->snapshot);

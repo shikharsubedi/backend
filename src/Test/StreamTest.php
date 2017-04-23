@@ -1,6 +1,7 @@
 <?php
 namespace Test;
 
+use Demo\Generator\JsonGenerator;
 use Demo\Inventory;
 use Demo\Stream;
 use Demo\Order;
@@ -26,11 +27,34 @@ class StreamTest extends \PHPUnit_Framework_TestCase
                 $this->assertLessThanOrEqual($streamTotal[$item], $streamAllocation->getItem($item));
             }
         }
-
+        
     }
 
-    public function testOrderHasItemCountLessThan6()
+    public function testStreamTotalIsGreaterThanInventory()
     {
+        $dataSource = $this->getDataSource();
+
+        $dataSource->generate();
+
+        $inventory = $dataSource->getInventory();
+
+        $streams = $dataSource->getStreams();
+        $total = [];
+
+        foreach ($streams as $key => $stream) {
+            $streamTotal = $stream->getStreamTotal();
+            foreach (Inventory::ITEMS as $item) {
+                if (!isset($total[$item])) {
+                    $total[$item] = $streamTotal[$item];
+                } else {
+                    $total[$item] += $streamTotal[$item];
+                }
+            }
+        }
+
+        foreach ($inventory as $item => $quantity) {
+            $this->assertLessThanOrEqual($total[$item], $quantity);
+        }
 
     }
 
@@ -59,9 +83,9 @@ class StreamTest extends \PHPUnit_Framework_TestCase
 
         $orderGenerator = new OrderGenerator();
 
-        $streamGenerator = new StreamGenerator($orderGenerator, 2, $randomIncrement);
+        $streamGenerator = new StreamGenerator($orderGenerator, 1, $randomIncrement);
 
-        $dataSource = new DataSource($inventory,$streamGenerator);
+        $dataSource = new DataSource($inventory, $streamGenerator);
 
         return $dataSource;
 

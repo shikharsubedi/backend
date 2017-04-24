@@ -19,3 +19,8 @@ All the tests are in the ``` Test ``` directory. I have used PHPUnit 5.7.19 as t
 from the root directory run the following command to run unit tests.
 
 ```php vendor/bin/phpunit src/Test ```
+
+
+Developed By
+
+Shikhar Subedi

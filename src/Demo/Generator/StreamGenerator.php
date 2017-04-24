@@ -1,8 +1,6 @@
 <?php
 namespace Demo\Generator;
 
-use Demo\Exception\InsufficientQuantityException;
-use Demo\Order;
 use Demo\Stream;
 use Demo\Inventory;
 

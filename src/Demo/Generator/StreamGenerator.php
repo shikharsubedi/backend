@@ -2,6 +2,7 @@
 namespace Demo\Generator;
 
 use Demo\Exception\InsufficientQuantityException;
+use Demo\Order;
 use Demo\Stream;
 use Demo\Inventory;
 
@@ -148,14 +149,7 @@ class StreamGenerator
         $orderId = 0;
         foreach ($streams as $stream) {
             foreach ($stream->getOrders() as $orderId => $order) {
-                foreach ($order->getOrderItems() as $item => $quantity) {
-                    try {
-                        $testInventory->decrement($item, $quantity);
-                    } catch (InsufficientQuantityException $e) {
-
-                    }
-
-                }
+                $order->fulfillOrder($testInventory);
             }
         }
         if ($testInventory->getTotal() != 0) {
@@ -166,7 +160,7 @@ class StreamGenerator
         }
 
         return $streams;
-
-
+        
     }
+    
 }

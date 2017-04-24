@@ -1,6 +1,7 @@
 <?php
 namespace Demo;
 
+use Demo\Exception\InsufficientQuantityException;
 use Demo\Exception\OrderNotAvailableException;
 
 class Order
@@ -74,6 +75,21 @@ class Order
         }
 
         return $total;
+    }
+
+    /**
+     * this method is used by Stream Generator to ensure correctness of orders
+     * @param Inventory $inventory
+     */
+    public function fulfillOrder(Inventory $inventory)
+    {
+        foreach ($this->orderItems as $item => $quantity) {
+            try {
+                $inventory->decrement($item, $quantity);
+            } catch (InsufficientQuantityException $e) {
+
+            }
+        }
     }
 
     /**

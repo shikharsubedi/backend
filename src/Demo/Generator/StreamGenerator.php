@@ -75,21 +75,23 @@ class StreamGenerator
      * @param OrderGenerator $orderGenerator
      * @param $streamCount
      * @param array $randomIncrement
+     * @param Inventory $totalInventory
      */
-    public function __construct(OrderGenerator $orderGenerator, $streamCount, array $randomIncrement)
+    public function __construct(OrderGenerator $orderGenerator, $streamCount, array $randomIncrement, Inventory $totalInventory)
     {
         $this->orderGenerator = $orderGenerator;
         $this->streamCount = $streamCount;
         $this->randomIncrement = $randomIncrement;
+        $this->totalInventory = $totalInventory;
     }
 
     /**
-     * @param Inventory $totalAllocation
+     * 
      * @return Stream[]
      */
-    public function generate(Inventory $totalAllocation)
+    public function generate()
     {
-        $this->totalInventory = clone $totalAllocation;
+        $totalAllocation = clone $this->totalInventory;
         $streams = [];
         for ($i = 1; $i <= $this->streamCount; $i++) {
             $streams[$i] = $this->build($i, $totalAllocation);
@@ -110,9 +112,8 @@ class StreamGenerator
 
         $items = $this->generateItemCount($this->totalInventory);
         $streamInventory = new Inventory($items);
-        $streamAllocation = clone $streamInventory;
         $headerCount = 1;
-        $stream = new Stream($id, $this->streamCount, $streamAllocation);
+        $stream = new Stream($id, $this->streamCount);
 
         while ((($streamInventory->getTotal()) > 0) && (($totalAllocation->getTotal()) > 0)) {
             $order = $this->orderGenerator->generateOrder($headerCount, $streamInventory, $totalAllocation);

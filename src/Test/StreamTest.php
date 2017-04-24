@@ -61,7 +61,7 @@ class StreamTest extends \PHPUnit_Framework_TestCase
 
         $orderGenerator = new OrderGenerator();
 
-        $streamGenerator = new StreamGenerator($orderGenerator, 1, $randomIncrement);
+        $streamGenerator = new StreamGenerator($orderGenerator, 1, $randomIncrement, $inventory);
 
         $dataSource = new DataSource($inventory, $streamGenerator);
 

@@ -20,11 +20,6 @@ class Stream
     private $streamCount;
 
     /**
-     * @var Inventory
-     */
-    private $streamAllocation;
-
-    /**
      * @return int
      */
     public function getId()
@@ -47,14 +42,7 @@ class Stream
     {
         return $this->streamCount;
     }
-
-    /**
-     * @return Inventory
-     */
-    public function getStreamAllocation()
-    {
-        return $this->streamAllocation;
-    }
+    
 
     /**
      * @param integer $id
@@ -78,13 +66,12 @@ class Stream
      * Stream constructor.
      * @param $id
      * @param $streamCount
-     * @param Inventory $streamAllocation
+     * 
      */
-    public function __construct($id, $streamCount, Inventory $streamAllocation)
+    public function __construct($id, $streamCount)
     {
         $this->id = $id;
         $this->streamCount = $streamCount;
-        $this->streamAllocation = $streamAllocation;
         $this->orders = [];
     }
 
@@ -110,6 +97,7 @@ class Stream
 
     /**
      * used by the JsonGenerator class while generating the final json string
+     * @return array
      */
     public function generateOutputArray()
     {

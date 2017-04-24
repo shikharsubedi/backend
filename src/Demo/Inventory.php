@@ -1,6 +1,7 @@
 <?php
 namespace Demo;
 
+use ArrayIterator;
 use Demo\Exception\IllegalItemException;
 use Demo\Exception\InsufficientQuantityException;
 use Demo\Exception\ZeroQuantityException;
@@ -14,7 +15,10 @@ class Inventory implements \IteratorAggregate
 
     const ITEMS = array('A', 'B', 'C', 'D', 'E');
 
-
+    /**
+     * Inventory constructor.
+     * @param array $snapshot
+     */
     public function __construct(array $snapshot)
     {
         $this->validate($snapshot);
@@ -43,6 +47,10 @@ class Inventory implements \IteratorAggregate
         }
     }
 
+    /**
+     * @param $item
+     * @param $quantity
+     */
     public function increment($item, $quantity)
     {
         if (!array_key_exists($item, $this->snapshot)) {
@@ -52,6 +60,10 @@ class Inventory implements \IteratorAggregate
 
     }
 
+    /**
+     * @param $item
+     * @param $quantity
+     */
     public function decrement($item, $quantity)
     {
         if (!array_key_exists($item, $this->snapshot)) {
@@ -64,6 +76,10 @@ class Inventory implements \IteratorAggregate
         $this->snapshot[$item] -= $quantity;
     }
 
+    /**
+     * @param $item
+     * @return mixed
+     */
     public function getItem($item)
     {
         if (!array_key_exists($item, $this->snapshot)) {
@@ -72,15 +88,20 @@ class Inventory implements \IteratorAggregate
         return $this->snapshot[$item];
     }
 
-
+    /**
+     * @return mixed
+     */
     public function getTotal()
     {
         return array_sum($this->snapshot);
     }
 
+    /**
+     * @return ArrayIterator
+     */
     public function getIterator()
     {
-        return new \ArrayIterator($this->snapshot);
+        return new ArrayIterator($this->snapshot);
     }
 
 }

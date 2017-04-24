@@ -31,7 +31,7 @@ $inventory = new Inventory($inventoryArray);
 
 $orderGenerator = new OrderGenerator();
 
-$totalNumberOfStreams = 2;
+$totalNumberOfStreams = 3;
 
 $streamGenerator = new StreamGenerator($orderGenerator, $totalNumberOfStreams, $randomIncrement);
 

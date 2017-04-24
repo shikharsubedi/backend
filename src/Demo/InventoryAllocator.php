@@ -49,6 +49,10 @@ class InventoryAllocator
     }
 
     /**
+     * method that takes the input string a generates the output queue
+     * the output queue is used by the StringGenerator object to generate
+     * the output string
+     * 
      * @return SplQueue
      */
     public function allocate()

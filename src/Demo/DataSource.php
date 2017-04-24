@@ -24,6 +24,11 @@ class DataSource
         return $this->streamGenerator;
     }
 
+    /**
+     * DataSource constructor.
+     * @param Inventory $inventory
+     * @param StreamGenerator $streamGenerator
+     */
     public function __construct(Inventory $inventory, StreamGenerator $streamGenerator)
     {
         $this->inventory = $inventory;

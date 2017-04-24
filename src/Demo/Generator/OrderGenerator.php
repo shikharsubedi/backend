@@ -9,6 +9,12 @@ class OrderGenerator
 {
     const MAX_ITEMS = 5;
 
+    /**
+     * @param $id
+     * @param Inventory $streamInventory
+     * @param Inventory $totalInventory
+     * @return Order
+     */
     public function generateOrder($id, Inventory $streamInventory, Inventory $totalInventory)
     {
         $resultArray = $this->buildOutputArray($streamInventory, $totalInventory);

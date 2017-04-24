@@ -56,16 +56,30 @@ class Stream
         return $this->streamAllocation;
     }
 
+    /**
+     * @param integer $id
+     * @param Order $order
+     */
     public function addOrder($id, Order $order)
     {
         $this->orders[$id] = $order;
     }
 
+    /**
+     * @param $id
+     * @return Order
+     */
     public function getOrder($id)
     {
         return $this->orders[$id];
     }
 
+    /**
+     * Stream constructor.
+     * @param $id
+     * @param $streamCount
+     * @param Inventory $streamAllocation
+     */
     public function __construct($id, $streamCount, Inventory $streamAllocation)
     {
         $this->id = $id;

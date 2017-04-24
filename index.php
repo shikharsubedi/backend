@@ -28,24 +28,15 @@ $randomIncrement = array(
 );
 
 $inventory = new Inventory($inventoryArray);
-
 $orderGenerator = new OrderGenerator();
-
 $totalNumberOfStreams = 3;
-
 $streamGenerator = new StreamGenerator($orderGenerator, $totalNumberOfStreams, $randomIncrement);
-
 $dataSource = new DataSource($inventory, $streamGenerator);
-
 $streams = $dataSource->generate();
-
 $stringGenerator = new StringGenerator();
 
-
 $inputString = $stringGenerator->generateInputString($streams);
-
 $inventoryAllocator = new InventoryAllocator($inputString, $inventory);
-
 $outputQueue = $inventoryAllocator->allocate();
 
 echo $stringGenerator->generateOutputString($outputQueue);

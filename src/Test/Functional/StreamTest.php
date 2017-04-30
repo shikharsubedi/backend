@@ -1,18 +1,19 @@
 <?php
-namespace Test;
+namespace Test\Functional;
 
 use Demo\Inventory;
 use Demo\Generator\OrderGenerator;
 use Demo\Generator\StreamGenerator;
 use Demo\DataSource;
 use Demo\Stream;
+use PHPUnit_Framework_TestCase;
 
-class StreamTest extends \PHPUnit_Framework_TestCase
+class StreamTest extends PHPUnit_Framework_TestCase
 {
     
     public function testStreamTotalIsGreaterThanInventory()
     {
-        list($dataSource, $inventory) = $this->getDataSource();
+        list($dataSource, $inventory) = static::getDataSource();
 
         /** @var Stream[] $streams */
         $streams = $dataSource->generate();

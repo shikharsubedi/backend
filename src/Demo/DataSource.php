@@ -2,6 +2,7 @@
 namespace Demo;
 
 use Demo\Generator\StreamGenerator;
+use Demo\Generator\StreamGeneratorInterface;
 use Demo\Generator\StringGenerator;
 
 class DataSource
@@ -12,7 +13,7 @@ class DataSource
     private $streamGenerator;
 
     /**
-     * @var Inventory
+     * @var IteratorInventoryInterface
      */
     private $inventory;
 
@@ -26,10 +27,10 @@ class DataSource
 
     /**
      * DataSource constructor.
-     * @param Inventory $inventory
-     * @param StreamGenerator $streamGenerator
+     * @param IteratorInventoryInterface $inventory
+     * @param StreamGeneratorInterface $streamGenerator
      */
-    public function __construct(Inventory $inventory, StreamGenerator $streamGenerator)
+    public function __construct(IteratorInventoryInterface $inventory, StreamGeneratorInterface $streamGenerator)
     {
         $this->inventory = $inventory;
         $this->streamGenerator = $streamGenerator;
@@ -37,7 +38,7 @@ class DataSource
 
 
     /**
-     * @return Inventory
+     * @return IteratorInventoryInterface
      */
     public function getInventory()
     {

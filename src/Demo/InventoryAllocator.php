@@ -7,7 +7,7 @@ use Demo\Exception\IllegalStateException;
 use SplPriorityQueue;
 use SplQueue;
 
-class InventoryAllocator
+class InventoryAllocator implements InventoryAllocatorInterface
 {
     /**
      * the input json string
@@ -40,16 +40,16 @@ class InventoryAllocator
     /**
      * InventoryAllocator constructor.
      * @param $inputString
-     * @param Inventory $inventory
+     * @param IteratorInventoryInterface $inventory
      */
-    public function __construct($inputString, Inventory $inventory)
+    public function __construct($inputString, IteratorInventoryInterface $inventory)
     {
         $this->inputString = $inputString;
         $this->inventory = $inventory;
     }
 
     /**
-     * method that takes the input string a generates the output queue
+     * method that takes the input string and generates the output queue
      * the output queue is used by the StringGenerator object to generate
      * the output string
      * 

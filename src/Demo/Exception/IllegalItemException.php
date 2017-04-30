@@ -1,9 +1,9 @@
 <?php
 namespace Demo\Exception;
 
-use RuntimeException;
+use InvalidArgumentException;
 
-class IllegalItemException extends RuntimeException
+class IllegalItemException extends InvalidArgumentException
 {
 
 }

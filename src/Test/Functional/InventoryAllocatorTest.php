@@ -1,11 +1,12 @@
 <?php
-namespace Test;
+
+namespace Test\Functional;
 
 use Demo\Generator\StringGenerator;
 use Demo\Inventory;
 use Demo\InventoryAllocator;
 use PHPUnit_Framework_TestCase;
-use Demo\Stream;
+use Demo\StreamInterface;
 
 class InventoryAllocatorTest extends PHPUnit_Framework_TestCase
 {
@@ -15,7 +16,7 @@ class InventoryAllocatorTest extends PHPUnit_Framework_TestCase
         /**@var Inventory $inventory */
         list($dataSource, $inventory) = StreamTest::getDataSource();
 
-        /** @var Stream[] $streams */
+        /** @var StreamInterface[] $streams */
         $streams = $dataSource->generate();
 
         $stringGenerator = new StringGenerator();

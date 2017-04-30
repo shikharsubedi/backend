@@ -3,19 +3,20 @@ namespace Demo\Generator;
 
 use Demo\Exception\InsufficientQuantityException;
 use Demo\Inventory;
+use Demo\IteratorInventoryInterface;
 use Demo\Order;
 
-class OrderGenerator
+class OrderGenerator implements OrderGeneratorInterface
 {
     const MAX_ITEMS = 5;
 
     /**
      * @param $id
-     * @param Inventory $streamInventory
-     * @param Inventory $totalInventory
+     * @param IteratorInventoryInterface $streamInventory
+     * @param IteratorInventoryInterface $totalInventory
      * @return Order
      */
-    public function generateOrder($id, Inventory $streamInventory, Inventory $totalInventory)
+    public function generateOrder($id, IteratorInventoryInterface $streamInventory, IteratorInventoryInterface $totalInventory)
     {
         $resultArray = $this->buildOutputArray($streamInventory, $totalInventory);
         $order = new Order($id);
@@ -23,7 +24,12 @@ class OrderGenerator
         return $order;
     }
 
-    private function buildOutputArray(Inventory $streamInventory, Inventory $totalInventory)
+    /**
+     * @param IteratorInventoryInterface $streamInventory
+     * @param IteratorInventoryInterface $totalInventory
+     * @return array
+     */
+    private function buildOutputArray(IteratorInventoryInterface $streamInventory, IteratorInventoryInterface $totalInventory)
     {
         $resultArray = [];
         $items = Inventory::ITEMS;
@@ -35,17 +41,16 @@ class OrderGenerator
             try {
                 $streamInventory->decrement($item, $decrement);
             } catch (InsufficientQuantityException $e) {
-                $decrement = $streamInventory->getItem($item);
+                $decrement = $streamInventory->getItemQuantity($item);
                 $streamInventory->decrement($item, $decrement);
             }
             try {
                 $totalInventory->decrement($item, $decrement);
             } catch (InsufficientQuantityException $e) {
-                $itemQuantity = $totalInventory->getItem($item);
+                $itemQuantity = $totalInventory->getItemQuantity($item);
                 $totalInventory->decrement($item, $itemQuantity);
             }
-
-
+            
             $resultArray[$item] = $decrement;
 
         }
@@ -62,10 +67,10 @@ class OrderGenerator
 
     /**
      * @param $id
-     * @param Inventory $totalInventory
+     * @param IteratorInventoryInterface $totalInventory
      * @return Order
      */
-    public function generateFinalOrder($id, Inventory $totalInventory)
+    public function generateFinalOrder($id, IteratorInventoryInterface $totalInventory)
     {
         $order = new Order($id);
 
@@ -93,13 +98,16 @@ class OrderGenerator
         return $randKeys;
     }
 
+    /**
+     * @return array
+     */
     private function buildRandomOrderItem()
     {
         $orderItem = [];
         $items = Inventory::ITEMS;
         $randKeys = array_rand($items, 1);
         $item = $items[$randKeys];
-        $orderItem[$item] = rand(1, 5);
+        $orderItem[$item] = rand(1, Order::MAX_ITEMS);
 
         return $orderItem;
     }

@@ -2,7 +2,7 @@
 namespace Demo;
 
 
-class Stream
+class Stream implements StreamInterface
 {
     /**
      * @var integer
@@ -42,20 +42,20 @@ class Stream
     {
         return $this->streamCount;
     }
-    
+
 
     /**
-     * @param integer $id
-     * @param Order $order
+     * @param $id
+     * @param OrderInterface $order
      */
-    public function addOrder($id, Order $order)
+    public function addOrder($id, OrderInterface $order)
     {
         $this->orders[$id] = $order;
     }
 
     /**
      * @param $id
-     * @return Order
+     * @return OrderInterface
      */
     public function getOrder($id)
     {

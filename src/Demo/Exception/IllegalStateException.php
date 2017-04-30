@@ -1,9 +1,9 @@
 <?php
 namespace Demo\Exception;
 
-use RuntimeException;
+use LogicException;
 
-class IllegalStateException extends RuntimeException
+class IllegalStateException extends LogicException
 {
 
 }

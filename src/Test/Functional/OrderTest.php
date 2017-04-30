@@ -1,18 +1,20 @@
 <?php
-namespace Test;
+namespace Test\Functional;
 
 use Demo\Order;
 use Demo\Stream;
+use Demo\StreamInterface;
+use PHPUnit_Framework_TestCase;
 
 
-class OrderTest extends \PHPUnit_Framework_TestCase
+class OrderTest extends PHPUnit_Framework_TestCase
 {
 
     public function testOrderHasCountGreaterThanZero()
     {
         list($dataSource, $inventory) = StreamTest::getDataSource();
 
-        /** @var Stream[] $streams */
+        /** @var StreamInterface[] $streams */
         $streams = $dataSource->generate();
 
         foreach ($streams as $stream) {

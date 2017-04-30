@@ -1,10 +1,12 @@
 <?php
 namespace Demo\Generator;
 
+use Demo\IteratorInventoryInterface;
 use Demo\Stream;
 use Demo\Inventory;
+use Demo\StreamInterface;
 
-class StreamGenerator
+class StreamGenerator implements StreamGeneratorInterface
 {
 
     /**
@@ -37,13 +39,6 @@ class StreamGenerator
         return $this->streamCount;
     }
 
-    /**
-     * @param int $streamCount
-     */
-    public function setStreamCount($streamCount)
-    {
-        $this->streamCount = $streamCount;
-    }
 
     /**
      * @return OrderGenerator
@@ -61,22 +56,15 @@ class StreamGenerator
         return $this->randomIncrement;
     }
 
-    /**
-     * @param array $randomIncrement
-     */
-    public function setRandomIncrement(array $randomIncrement)
-    {
-        $this->randomIncrement = $randomIncrement;
-    }
 
     /**
      * StreamGenerator constructor.
-     * @param OrderGenerator $orderGenerator
-     * @param $streamCount
+     * @param OrderGeneratorInterface $orderGenerator
+     * @param integer $streamCount
      * @param array $randomIncrement
-     * @param Inventory $totalInventory
+     * @param IteratorInventoryInterface $totalInventory
      */
-    public function __construct(OrderGenerator $orderGenerator, $streamCount, array $randomIncrement, Inventory $totalInventory)
+    public function __construct(OrderGeneratorInterface $orderGenerator, $streamCount, array $randomIncrement, IteratorInventoryInterface $totalInventory)
     {
         $this->orderGenerator = $orderGenerator;
         $this->streamCount = $streamCount;
@@ -86,7 +74,7 @@ class StreamGenerator
 
     /**
      * 
-     * @return Stream[]
+     * @return StreamInterface[]
      */
     public function generate()
     {
@@ -102,11 +90,11 @@ class StreamGenerator
     }
 
     /**
-     * @param int $id
-     * @param Inventory $totalAllocation
-     * @return Stream
+     * @param integer $id
+     * @param IteratorInventoryInterface $totalAllocation
+     * @return StreamInterface
      */
-    private function build($id, Inventory $totalAllocation)
+    private function build($id, IteratorInventoryInterface $totalAllocation)
     {
 
         $items = $this->generateItemCount($this->totalInventory);
@@ -124,22 +112,22 @@ class StreamGenerator
     }
 
     /**
-     * @param Inventory $totalAllocation
+     * @param IteratorInventoryInterface $totalAllocation
      * @return array
      */
-    private function generateItemCount(Inventory $totalAllocation)
+    private function generateItemCount(IteratorInventoryInterface $totalAllocation)
     {
         $items = [];
         foreach (Inventory::ITEMS as $item) {
-            $items[$item] = ceil(($totalAllocation->getItem($item) + $this->randomIncrement[$item]) / $this->streamCount);
+            $items[$item] = ceil(($totalAllocation->getItemQuantity($item) + $this->randomIncrement[$item]) / $this->streamCount);
         }
         return $items;
 
     }
 
     /**
-     * @param Stream[] $streams
-     * @return Stream[]
+     * @param StreamInterface[] $streams
+     * @return StreamInterface[]
      */
     private function ensureCorrectness(array $streams)
     {

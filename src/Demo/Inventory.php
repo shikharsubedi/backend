@@ -6,7 +6,7 @@ use Demo\Exception\IllegalItemException;
 use Demo\Exception\InsufficientQuantityException;
 use Demo\Exception\ZeroQuantityException;
 
-class Inventory implements \IteratorAggregate
+class Inventory implements IteratorInventoryInterface
 {
     /**
      * @var array
@@ -46,20 +46,7 @@ class Inventory implements \IteratorAggregate
             throw new ZeroQuantityException("All items cannot have 0 quantity");
         }
     }
-
-    /**
-     * @param $item
-     * @param $quantity
-     */
-    public function increment($item, $quantity)
-    {
-        if (!array_key_exists($item, $this->snapshot)) {
-            throw new IllegalItemException("Item {$item} not found in inventory");
-        }
-        $this->snapshot[$item] += $quantity;
-
-    }
-
+    
     /**
      * @param $item
      * @param $quantity
@@ -78,9 +65,9 @@ class Inventory implements \IteratorAggregate
 
     /**
      * @param $item
-     * @return mixed
+     * @return integer
      */
-    public function getItem($item)
+    public function getItemQuantity($item)
     {
         if (!array_key_exists($item, $this->snapshot)) {
             throw new IllegalItemException("Item {$item} not found in inventory");
@@ -89,7 +76,7 @@ class Inventory implements \IteratorAggregate
     }
 
     /**
-     * @return mixed
+     * @return integer
      */
     public function getTotal()
     {

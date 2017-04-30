@@ -4,7 +4,7 @@ namespace Demo;
 use Demo\Exception\InsufficientQuantityException;
 use Demo\Exception\OrderNotAvailableException;
 
-class Order
+class Order implements OrderInterface
 {
     /**
      * @var integer
@@ -78,10 +78,9 @@ class Order
     }
 
     /**
-     * this method is used by Stream Generator to ensure correctness of orders
-     * @param Inventory $inventory
+     * @param IteratorInventoryInterface $inventory
      */
-    public function fulfillOrder(Inventory $inventory)
+    public function fulfillOrder(IteratorInventoryInterface $inventory)
     {
         foreach ($this->orderItems as $item => $quantity) {
             try {
@@ -98,14 +97,12 @@ class Order
      */
     public function generateOutputArray()
     {
-        $result = [];
-
         if (is_null($this->orderItems)) {
             throw new OrderNotAvailableException("OrderItems should be present");
         }
 
+        $result = [];
         $result['id'] = $this->getId();
-
         $result['items'] = $this->orderItems;
 
         return $result;

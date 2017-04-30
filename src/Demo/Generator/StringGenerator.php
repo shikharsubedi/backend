@@ -4,11 +4,11 @@ namespace Demo\Generator;
 use Demo\Stream;
 use SplQueue;
 
-class StringGenerator
+class StringGenerator implements OutputStringGeneratorInterface, InputStringGeneratorInterface
 {
 
     /**
-     * @param Stream[] $streams
+     * @param StreamInterface[] $streams
      * @return string
      */
     public function generateInputString($streams)

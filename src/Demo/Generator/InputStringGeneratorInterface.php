@@ -1,12 +1,12 @@
 <?php
 namespace Demo\Generator;
 
-use Demo\Stream;
+use Demo\StreamInterface;
 
 interface InputStringGeneratorInterface
 {
     /**
-     * @param Stream[] $streams
+     * @param StreamInterface[] $streams
      * @return string
      */
     public function generateInputString($streams);

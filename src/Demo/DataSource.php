@@ -1,9 +1,10 @@
 <?php
 namespace Demo;
 
+use Demo\Generator\InputStringGeneratorInterface;
 use Demo\Generator\StreamGenerator;
 use Demo\Generator\StreamGeneratorInterface;
-use Demo\Generator\StringGenerator;
+
 
 class DataSource
 {
@@ -55,11 +56,11 @@ class DataSource
     }
 
     /**
-     * @param StringGenerator $stringGenerator
-     * @param Stream[] $streams
+     * @param InputStringGeneratorInterface $stringGenerator
+     * @param StreamInterface $streams
      * @return string
      */
-    public function generateJsonStream(StringGenerator $stringGenerator, $streams)
+    public function generateJsonStream(InputStringGeneratorInterface $stringGenerator, $streams)
     {
         return $stringGenerator->generateInputString($streams);
     }

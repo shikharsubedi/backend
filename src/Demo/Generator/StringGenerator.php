@@ -1,8 +1,9 @@
 <?php
 namespace Demo\Generator;
 
-use Demo\Stream;
 use SplQueue;
+use Demo\StreamInterface;
+
 
 class StringGenerator implements OutputStringGeneratorInterface, InputStringGeneratorInterface
 {
